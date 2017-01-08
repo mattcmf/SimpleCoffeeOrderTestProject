@@ -41,15 +41,17 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 @CucumberOptions(features = "features")
 public class LoginActivitySteps /*extends ActivityInstrumentationTestCase2<LoginActivity>*/ {
+//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
     @Rule
     public ActivityTestRule<CoffeeOrderListActivity> testRule = new ActivityTestRule<>(CoffeeOrderListActivity.class);
 
-    @Given("^I have a LoginActivity")
-    public void I_have_a_LoginActivity() {
-      //  Assert.assertThat(testRule.getActivity(), not(Matchers.<LoginActivity>nullValue()));
-//        assertNotNull(getActivity());
-    }
+//public class LoginActivitySteps /*extends ActivityInstrumentationTestCase2<LoginActivity>*/ {
+//    public class LoginActivitySteps extends ActivityInstrumentationTestCase2<CoffeeOrderListActivity> {
+
+//    public LoginActivitySteps(CoffeeOrderListActivity activityClass) {
+//        super(CoffeeOrderListActivity.class);
+//    }
 
     @When("^I input email (\\S+)$")
     public void I_input_email(final String email) {
@@ -62,6 +64,16 @@ public class LoginActivitySteps /*extends ActivityInstrumentationTestCase2<Login
     private static class ErrorTextMatcher extends TypeSafeMatcher<View> {
 
         private final String mExpectedError;
+
+        //@Rule
+        //public ActivityTestRule<CoffeeOrderListActivity> testRule = new ActivityTestRule<>(CoffeeOrderListActivity.class);
+
+        @Given("^I have a LoginActivity")
+        public void I_have_a_LoginActivity() {
+            System.out.println("dsddf");
+            //  Assert.assertThat(testRule.getActivity(), not(Matchers.<LoginActivity>nullValue()));
+//        assertNotNull(getActivity());
+        }
 
         private ErrorTextMatcher(String expectedError) {
             mExpectedError = expectedError;

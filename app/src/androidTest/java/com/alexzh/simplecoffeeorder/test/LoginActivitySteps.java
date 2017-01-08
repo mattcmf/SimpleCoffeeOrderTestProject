@@ -19,7 +19,8 @@
 
 package com.alexzh.simplecoffeeorder.test;
 
-import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
+import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 import android.widget.EditText;
 
@@ -27,36 +28,61 @@ import com.alexzh.simplecoffeeorder.R;
 import com.alexzh.simplecoffeeorder.view.activity.CoffeeOrderListActivity;
 
 import org.hamcrest.Description;
-import org.junit.Rule;
 import org.junit.internal.matchers.TypeSafeMatcher;
+import org.junit.runner.RunWith;
 
 import cucumber.api.CucumberOptions;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 @CucumberOptions(features = "features")
-public class LoginActivitySteps /*extends ActivityInstrumentationTestCase2<LoginActivity>*/ {
-//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+//public class LoginActivitySteps {
+//
+//    @Rule
+//    public ActivityTestRule<CoffeeOrderListActivity> testRule = new ActivityTestRule<>(CoffeeOrderListActivity.class);
 
-    @Rule
-    public ActivityTestRule<CoffeeOrderListActivity> testRule = new ActivityTestRule<>(CoffeeOrderListActivity.class);
+//TODO: replace with : @RunWith
 
-//public class LoginActivitySteps /*extends ActivityInstrumentationTestCase2<LoginActivity>*/ {
-//    public class LoginActivitySteps extends ActivityInstrumentationTestCase2<CoffeeOrderListActivity> {
+//Not needed for current implementation but may be needed for tagging
+@RunWith(AndroidJUnit4.class)
+public class LoginActivitySteps extends ActivityInstrumentationTestCase2<CoffeeOrderListActivity> {
 
-//    public LoginActivitySteps(CoffeeOrderListActivity activityClass) {
-//        super(CoffeeOrderListActivity.class);
+//    @Rule
+//    public ActivityTestRule<CoffeeOrderListActivity> mActivityRule =
+//            new ActivityTestRule<>(CoffeeOrderListActivity.class);
+//
+//    @Before
+//    public void setup() {
+//        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+//
+//        mServiceIdlingResource =
+//                new ServiceIdlingResource(mActivityRule.getActivity().getApplicationContext());
+//        registerIdlingResources(mServiceIdlingResource);
 //    }
+
+    public LoginActivitySteps(CoffeeOrderListActivity activityClass) {
+        super(CoffeeOrderListActivity.class);
+    }
 
     @When("^I input email (\\S+)$")
     public void I_input_email(final String email) {
         onView(withId(R.id.coffee_price)).perform(typeText(email), closeSoftKeyboard());
     }
+
+    @Given("^I have a LoginActivity$")
+    public void i_have_a_LoginActivity() throws Throwable {
+        assertNotNull(getActivity());
+        //onView(withId(R.id.pay)).perform(typeText("test"), closeSoftKeyboard());
+        onView(withId(R.id.pay)).perform(click());
+        onView(withId(R.id.pay)).perform(click());
+    }
+
 
     /**
      * Custom matcher to assert equal EditText.setError();

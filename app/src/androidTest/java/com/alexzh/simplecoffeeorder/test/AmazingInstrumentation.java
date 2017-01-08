@@ -23,7 +23,7 @@ import android.support.test.runner.MonitoringInstrumentation;
 
 import cucumber.api.android.CucumberInstrumentationCore;
 
-public class Instrumentation extends MonitoringInstrumentation {
+public class AmazingInstrumentation extends MonitoringInstrumentation {
 
     private final CucumberInstrumentationCore mInstrumentationCore = new CucumberInstrumentationCore(this);
 

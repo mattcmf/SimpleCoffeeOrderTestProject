@@ -14,7 +14,8 @@ android {
         useLibrary 'org.apache.http.legacy'
 
         testApplicationId "com.alexzh.simplecoffeeorder.test"
-        testInstrumentationRunner "com.alexzh.simplecoffeeorder.test.Instrumentation"
+        testInstrumentationRunner "com.alexzh.simplecoffeeorder.test.AmazingInstrumentation"
+        //testInstrumentationRunner "com.emmasuzuki.cucumberespressodemo.test.Instrumentation"
         //Enable this resync and update run config to run vanilla Cucumber
         //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -24,6 +25,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+//testing to see if it fixes
+//    defaultConfig {
+//        testInstrumentationRunner 'com.alexzh.simplecoffeeorder.test.Instrumentation'
+//    }
     sourceSets {
         androidTest {
             assets.srcDirs = ['src/androidTest/assets']

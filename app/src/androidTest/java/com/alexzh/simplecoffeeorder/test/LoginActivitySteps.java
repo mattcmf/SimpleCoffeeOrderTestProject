@@ -19,68 +19,67 @@
 
 package com.alexzh.simplecoffeeorder.test;
 
+import android.support.test.InstrumentationRegistry;
+import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.test.uiautomator.UiDevice;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 import android.widget.EditText;
 
 import com.alexzh.simplecoffeeorder.R;
+import com.alexzh.simplecoffeeorder.ServiceIdlingResource;
 import com.alexzh.simplecoffeeorder.view.activity.CoffeeOrderListActivity;
 
 import org.hamcrest.Description;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.internal.matchers.TypeSafeMatcher;
 import org.junit.runner.RunWith;
 
 import cucumber.api.CucumberOptions;
 import cucumber.api.java.en.Given;
-import cucumber.api.java.en.When;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.typeText;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.Espresso.registerIdlingResources;
+import static com.alexzh.simplecoffeeorder.actions.RecyclerChildViewActions.clickToViewChildItem;
 
 @CucumberOptions(features = "features")
-//public class LoginActivitySteps {
-//
-//    @Rule
-//    public ActivityTestRule<CoffeeOrderListActivity> testRule = new ActivityTestRule<>(CoffeeOrderListActivity.class);
 
-//TODO: replace with : @RunWith
-
-//Not needed for current implementation but may be needed for tagging
 @RunWith(AndroidJUnit4.class)
 public class LoginActivitySteps extends ActivityInstrumentationTestCase2<CoffeeOrderListActivity> {
+//public class LoginActivitySteps  {
+    private UiDevice mDevice;
+    private ServiceIdlingResource mServiceIdlingResource;
 
-//    @Rule
-//    public ActivityTestRule<CoffeeOrderListActivity> mActivityRule =
-//            new ActivityTestRule<>(CoffeeOrderListActivity.class);
-//
-//    @Before
-//    public void setup() {
-//        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-//
-//        mServiceIdlingResource =
-//                new ServiceIdlingResource(mActivityRule.getActivity().getApplicationContext());
-//        registerIdlingResources(mServiceIdlingResource);
-//    }
+    @Rule
+    public ActivityTestRule<CoffeeOrderListActivity> mActivityRule = new ActivityTestRule<>(CoffeeOrderListActivity.class);
 
+    @Before
+    public void setup() {
+        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+
+        mServiceIdlingResource =
+                new ServiceIdlingResource(mActivityRule.getActivity().getApplicationContext());
+        registerIdlingResources(mServiceIdlingResource);
+    }
+
+//    //Needed for running old version of app
     public LoginActivitySteps(CoffeeOrderListActivity activityClass) {
         super(CoffeeOrderListActivity.class);
     }
 
-    @When("^I input email (\\S+)$")
-    public void I_input_email(final String email) {
-        onView(withId(R.id.coffee_price)).perform(typeText(email), closeSoftKeyboard());
-    }
 
     @Given("^I have a LoginActivity$")
     public void i_have_a_LoginActivity() throws Throwable {
+        //Only needed for old verison of app
         assertNotNull(getActivity());
-        //onView(withId(R.id.pay)).perform(typeText("test"), closeSoftKeyboard());
-        onView(withId(R.id.pay)).perform(click());
-        onView(withId(R.id.pay)).perform(click());
+
+        //Espresso lines
+        final String espresso = "Espresso";
+        clickToViewChildItem(R.id.recyclerView, espresso, R.id.coffee_increment);
+
+        //Espresso only
+        //mDevice.openNotification();
     }
 
 

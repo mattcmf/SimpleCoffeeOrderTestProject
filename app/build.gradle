@@ -15,7 +15,6 @@ android {
 
         testApplicationId "com.alexzh.simplecoffeeorder.test"
         testInstrumentationRunner "com.alexzh.simplecoffeeorder.test.AmazingInstrumentation"
-        //testInstrumentationRunner "com.emmasuzuki.cucumberespressodemo.test.Instrumentation"
         //Enable this resync and update run config to run vanilla Cucumber
         //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

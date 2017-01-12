@@ -19,11 +19,11 @@
 
 package com.alexzh.simplecoffeeorder.test;
 
+import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
-import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 import android.widget.EditText;
 
@@ -32,7 +32,6 @@ import com.alexzh.simplecoffeeorder.ServiceIdlingResource;
 import com.alexzh.simplecoffeeorder.view.activity.CoffeeOrderListActivity;
 
 import org.hamcrest.Description;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.internal.matchers.TypeSafeMatcher;
 import org.junit.runner.RunWith;
@@ -46,33 +45,53 @@ import static com.alexzh.simplecoffeeorder.actions.RecyclerChildViewActions.clic
 @CucumberOptions(features = "features")
 
 @RunWith(AndroidJUnit4.class)
-public class LoginActivitySteps extends ActivityInstrumentationTestCase2<CoffeeOrderListActivity> {
-//public class LoginActivitySteps  {
+//public class LoginActivitySteps extends ActivityInstrumentationTestCase2<CoffeeOrderListActivity> {
+public class LoginActivitySteps  {
     private UiDevice mDevice;
     private ServiceIdlingResource mServiceIdlingResource;
 
+    //Debugging integration with Cucumber
+
     @Rule
-    public ActivityTestRule<CoffeeOrderListActivity> mActivityRule = new ActivityTestRule<>(CoffeeOrderListActivity.class);
+    public ActivityTestRule<CoffeeOrderListActivity> mActivityRule = new ActivityTestRule<>(CoffeeOrderListActivity.class,false,false);
 
-    @Before
+    @cucumber.api.java.Before
     public void setup() {
-        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
+        Intent grouchyIntent = new Intent();
+        // intent stuff
+        grouchyIntent.putExtra("EXTRA_IS_GROUCHY", true);
+        mActivityRule.launchActivity(grouchyIntent);
+
+
+        CoffeeOrderListActivity activity = mActivityRule.getActivity();
+
+
+
+        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        InstrumentationRegistry.getContext();
+        String sdfsdf = mDevice.getCurrentPackageName();
         mServiceIdlingResource =
                 new ServiceIdlingResource(mActivityRule.getActivity().getApplicationContext());
         registerIdlingResources(mServiceIdlingResource);
+
     }
 
-//    //Needed for running old version of app
-    public LoginActivitySteps(CoffeeOrderListActivity activityClass) {
-        super(CoffeeOrderListActivity.class);
-    }
+//    @Test
+//    public void shouldOrderThreeEspressos() {
+//
+//
+//
+////    //Needed for running old version of app
+////    public LoginActivitySteps(CoffeeOrderListActivity activityClass) {
+////        super(CoffeeOrderListActivity.class);
+//    }
 
 
     @Given("^I have a LoginActivity$")
     public void i_have_a_LoginActivity() throws Throwable {
         //Only needed for old verison of app
-        assertNotNull(getActivity());
+        //assertNotNull(getActivity());
 
         //Espresso lines
         final String espresso = "Espresso";

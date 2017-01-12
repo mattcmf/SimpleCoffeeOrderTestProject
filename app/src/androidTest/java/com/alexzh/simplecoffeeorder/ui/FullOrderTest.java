@@ -48,8 +48,7 @@ public class FullOrderTest {
     public void setup() {
         mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
-        mServiceIdlingResource =
-                new ServiceIdlingResource(mActivityRule.getActivity().getApplicationContext());
+        mServiceIdlingResource =  new ServiceIdlingResource(mActivityRule.getActivity().getApplicationContext());
         registerIdlingResources(mServiceIdlingResource);
     }
 

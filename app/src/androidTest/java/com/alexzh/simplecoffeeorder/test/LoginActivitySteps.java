@@ -23,7 +23,10 @@ import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.UiDevice;
+import android.support.test.uiautomator.UiObject2;
+import android.support.test.uiautomator.Until;
 import android.view.View;
 import android.widget.EditText;
 
@@ -38,67 +41,114 @@ import org.junit.runner.RunWith;
 
 import cucumber.api.CucumberOptions;
 import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
 
+import static android.support.test.espresso.Espresso.onData;
+import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.registerIdlingResources;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.alexzh.simplecoffeeorder.actions.RecyclerChildViewActions.checkTextViewCountForCoffee;
 import static com.alexzh.simplecoffeeorder.actions.RecyclerChildViewActions.clickToViewChildItem;
+import static com.alexzh.simplecoffeeorder.utils.StringUtils.getString;
+import static org.hamcrest.Matchers.anything;
+import static org.junit.Assert.assertEquals;
 
 @CucumberOptions(features = "features")
 
 @RunWith(AndroidJUnit4.class)
-//public class LoginActivitySteps extends ActivityInstrumentationTestCase2<CoffeeOrderListActivity> {
 public class LoginActivitySteps  {
     private UiDevice mDevice;
     private ServiceIdlingResource mServiceIdlingResource;
 
-    //Debugging integration with Cucumber
+    //Test statics
+    private final String espresso = "Espresso";
+    private final String espressoCount = "3";
+    private final float totalCoffeePrice = 15.0f;
+    private final float coffeePrice = 5.0f;
+    private final String notificationTitle = "Coffee order app";
+    private final String notificationText = "Thank you for your payment.";
 
     @Rule
     public ActivityTestRule<CoffeeOrderListActivity> mActivityRule = new ActivityTestRule<>(CoffeeOrderListActivity.class,false,false);
 
     @cucumber.api.java.Before
     public void setup() {
-
-        Intent grouchyIntent = new Intent();
-        // intent stuff
-        grouchyIntent.putExtra("EXTRA_IS_GROUCHY", true);
-        mActivityRule.launchActivity(grouchyIntent);
-
-
-        CoffeeOrderListActivity activity = mActivityRule.getActivity();
-
-
-
+        Intent testIntent = new Intent();
         mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        InstrumentationRegistry.getContext();
-        String sdfsdf = mDevice.getCurrentPackageName();
-        mServiceIdlingResource =
-                new ServiceIdlingResource(mActivityRule.getActivity().getApplicationContext());
+        mActivityRule.launchActivity(testIntent);
+        mServiceIdlingResource =  new ServiceIdlingResource(mActivityRule.getActivity().getApplicationContext());
         registerIdlingResources(mServiceIdlingResource);
+    }
+
+    private void checkCoffeeListViewItem(String name, String count, float coffeePrice, float totalCoffeePrice) {
+        onData(anything()).atPosition(0).onChildView(withId(com.alexzh.simplecoffeeorder.R.id.coffee_name))
+                .check(matches(withText(name)));
+        onData(anything()).atPosition(0).onChildView(withId(com.alexzh.simplecoffeeorder.R.id.coffee_count))
+                .check(matches(withText(count)));
+        onData(anything()).atPosition(0).onChildView(withId(com.alexzh.simplecoffeeorder.R.id.coffee_price))
+                .check(matches(withText(getString(mActivityRule, com.alexzh.simplecoffeeorder.R.string.price, coffeePrice))));
+        onData(anything()).atPosition(0).onChildView(withId(com.alexzh.simplecoffeeorder.R.id.total_price))
+                .check(matches(withText(getString(mActivityRule, R.string.price, totalCoffeePrice))));
+    }
+
+    @Given("^I have a CoffeeOrderActivity$")
+    public void iHaveACoffeeOrderActivity() throws Throwable {
 
     }
 
-//    @Test
-//    public void shouldOrderThreeEspressos() {
-//
-//
-//
-////    //Needed for running old version of app
-////    public LoginActivitySteps(CoffeeOrderListActivity activityClass) {
-////        super(CoffeeOrderListActivity.class);
-//    }
+    @When("^I add '(\\d+)' Espressos$")
+    public void iAddEspressos(int arg0) throws Throwable {
+        clickToViewChildItem(com.alexzh.simplecoffeeorder.R.id.recyclerView, espresso, com.alexzh.simplecoffeeorder.R.id.coffee_increment);
+        clickToViewChildItem(com.alexzh.simplecoffeeorder.R.id.recyclerView, espresso, com.alexzh.simplecoffeeorder.R.id.coffee_increment);
+        clickToViewChildItem(com.alexzh.simplecoffeeorder.R.id.recyclerView, espresso, com.alexzh.simplecoffeeorder.R.id.coffee_increment);
 
+        checkTextViewCountForCoffee(com.alexzh.simplecoffeeorder.R.id.recyclerView,
+                com.alexzh.simplecoffeeorder.R.id.coffee_count,
+                espresso,
+                String.valueOf(espressoCount));
 
-    @Given("^I have a LoginActivity$")
-    public void i_have_a_LoginActivity() throws Throwable {
-        //Only needed for old verison of app
-        //assertNotNull(getActivity());
+        onView(withId(com.alexzh.simplecoffeeorder.R.id.total_price_toolbar))
+                .check(matches(withText(getString(mActivityRule,
+                        com.alexzh.simplecoffeeorder.R.string.price,
+                        totalCoffeePrice))));
 
-        //Espresso lines
-        final String espresso = "Espresso";
-        clickToViewChildItem(R.id.recyclerView, espresso, R.id.coffee_increment);
+    }
 
-        //Espresso only
-        //mDevice.openNotification();
+    @Then("^I pay for the order$")
+    public void iPayForTheOrder() throws Throwable {
+        onView(withId(com.alexzh.simplecoffeeorder.R.id.pay)).perform(click());
+
+        onView(withId(com.alexzh.simplecoffeeorder.R.id.delivery_info))
+                .perform(typeText("User"), closeSoftKeyboard());
+
+        onView(withId(com.alexzh.simplecoffeeorder.R.id.delivery_info))
+                .check(matches(withText("User")));
+
+        //Verify order
+        checkCoffeeListViewItem(espresso, espressoCount, coffeePrice, totalCoffeePrice);
+
+        //Pay for order
+        onView(withId(com.alexzh.simplecoffeeorder.R.id.pay)).perform(click());
+
+    }
+
+    @Then("^I should receive a notification that an order has been placed$")
+    public void iShouldReceiveANotificationThatAnOrderHasBeenPlaced() throws Throwable {
+        mDevice.openNotification();
+        mDevice.wait(Until.hasObject(By.text(notificationTitle)), 3000);
+        UiObject2 title = mDevice.findObject(By.text(notificationTitle));
+        UiObject2 text = mDevice.findObject(By.text(notificationText));
+        assertEquals(notificationTitle, title.getText());
+        assertEquals(notificationText, text.getText());
+        title.click();
+
+        checkCoffeeListViewItem(espresso, espressoCount, coffeePrice, totalCoffeePrice);
     }
 
 
@@ -108,16 +158,6 @@ public class LoginActivitySteps  {
     private static class ErrorTextMatcher extends TypeSafeMatcher<View> {
 
         private final String mExpectedError;
-
-        //@Rule
-        //public ActivityTestRule<CoffeeOrderListActivity> testRule = new ActivityTestRule<>(CoffeeOrderListActivity.class);
-
-        @Given("^I have a LoginActivity")
-        public void I_have_a_LoginActivity() {
-            System.out.println("dsddf");
-            //  Assert.assertThat(testRule.getActivity(), not(Matchers.<LoginActivity>nullValue()));
-//        assertNotNull(getActivity());
-        }
 
         private ErrorTextMatcher(String expectedError) {
             mExpectedError = expectedError;

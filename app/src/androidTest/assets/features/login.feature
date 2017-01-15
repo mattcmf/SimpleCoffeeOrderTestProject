@@ -1,14 +1,13 @@
 Feature: Login
     Perform login on email and password are inputted
 
-    Scenario Outline: Input email and password in wrong format
-        Given I have a LoginActivity
-        #When I input email <email>
-        #And I input password "<password>"
-        #And I press submit button
-        #Then I should see error on the <view>
 
-        Examples:
-            | email | password  | view  |
-            | test  | lemoncake | email |
-            | test@test.com || password |
+  Scenario Outline: Verify the notification panel is displayed
+    Given I have a CoffeeOrderActivity
+      When I add '3' Espressos
+      Then I pay for the order
+       Then I should receive a notification that an order has been placed
+
+    Examples:
+      | email |
+      | test  |
